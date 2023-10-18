@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>6-3 transition-component</title>
+  <style>
+      .fade-enter-from, .fade-leave-to {
+          opacity: 0;
+      }
+
+      .fade-enter-active, .fade-leave-active {
+          transition: opacity 1s;
+      }
+  </style>
+</head>
+<body>
+<div id="app">
+  <button @click='addItem'>+1</button>
+  <button @click='removeItem'>-1</button>
+  <transition-group name='fade' tag='div'>
+    <div v-for='(item, index) in itemList' :key='index'>{{ item }}</div>
+  </transition-group>
+
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const { createApp, ref, reactive } = Vue
+
+
+  const vm = createApp({
+    setup() {
+      const itemList = reactive([])
+      const count = ref(0)
+      const addItem = () => {
+        itemList.push(++count.value)
+      }
+      const removeItem = () => {
+        count.value = count.value > 0 ? --count.value : 0
+        itemList.pop()
+      }
+      return {
+        itemList,
+        count,
+        addItem,
+        removeItem
+      }
+    },
+  }).mount('#app')
+</script>
+</body>
+</html>

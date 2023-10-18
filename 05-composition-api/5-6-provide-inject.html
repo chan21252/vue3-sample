@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>5-6 provide/inject</title>
+</head>
+<body>
+<div id="app">
+  <component-a></component-a>
+  <component-b></component-b>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const { createApp, ref, reactive, toRef, toRefs, computed } = Vue
+
+  const componentB = {
+    setup(props, ctx) {
+      const {location, updateLocation} = Vue.inject('location')
+
+      console.log(location)
+
+      return {
+        location,
+        updateLocation
+      }
+    },
+    template: `
+      <div>
+        <div>组件B</div>
+        <div>{{ location }}</div>
+        <div><button @click='updateLocation("上海")'>更改位置</button></div>
+      </div>`
+  }
+
+  const componentA = {
+    setup(props, ctx) {
+      const location = ref('北京')
+      const updateLocation = (val) => {
+        location.value = val
+      }
+      Vue.provide('location', {location, updateLocation})
+
+      return {
+        location
+      }
+    },
+    components: {
+      'component-b': componentB
+    },
+    template: `
+      <div>
+        <div>组件A</div>
+        <div>{{ location }}</div>
+        <component-b/>
+      </div>`
+  }
+
+  createApp({
+    components: {
+      'component-a': componentA,
+    },
+  }).mount('#app')
+</script>
+</body>
+</html>

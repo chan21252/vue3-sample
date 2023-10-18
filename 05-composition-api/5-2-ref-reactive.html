@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>5-2 ref和reactive</title>
+</head>
+<body>
+<div id="app">
+  <component-a></component-a>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const { createApp, ref, reactive } = Vue
+
+  const componentA = {
+    setup(props, ctx) {
+      const obj = {count: 0}
+      const count = ref(obj.count)
+      console.log(++count.value)  // 1
+      console.log(obj.count)  // 0
+
+      const stu = {
+        name: 'jack'
+      }
+      const stuRef = ref(stu)
+      console.log(stuRef.value.name)
+
+      stuRef.value.name = 'tom'
+      console.log(stu.name)
+
+      const state = reactive({
+        count: 0,
+        name: "joy"
+      })
+      return {
+        count,
+        stuRef,
+        state
+      }
+    },
+    template: `
+      <div>
+        <div>ref count: {{ count }}</div>
+        <button @click='++count'>点我+1</button>
+        <div>{{ stuRef.name }}</div>
+        <div>reactive count: {{ state.count }}</div>
+        <button @click='++state.count'>点我+1</button>
+      </div>`
+  }
+  const app = createApp({
+    components: {
+      'component-a': componentA
+    },
+  })
+  const vm = app.mount('#app')
+</script>
+</body>
+</html>

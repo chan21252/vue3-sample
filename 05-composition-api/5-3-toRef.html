@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>5-3 toRef</title>
+</head>
+<body>
+<div id="app">
+  <component-a></component-a>
+  <component-b></component-b>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const { createApp, ref, reactive, toRef, toRefs } = Vue
+
+  const componentA = {
+    setup(props, ctx) {
+      const state = reactive({
+        foo: 1,
+        bar: 2,
+      })
+
+      const fooRef = toRef(state, 'foo')
+
+      const stateCount = {
+        count: 1
+      }
+
+      const stateCountRef = toRef(stateCount, 'count')
+      return {
+        state,
+        fooRef,
+        stateCount,
+        stateCountRef
+      }
+    },
+    template: `
+      <div>
+        <div>state.foo: {{ state.foo }}</div>
+        <div>fooRef: {{ fooRef }}</div>
+        <button @click='fooRef++'>点我foo+1</button>
+
+        <div>stateCount: {{ stateCount.count }}</div>
+        <div>stateCountRef: {{ stateCountRef }}</div>
+        <button @click='++stateCountRef'>点我count+1</button>
+      </div>`
+  }
+
+  const componentB = {
+    setup(props, ctx) {
+      const stateCount = reactive({
+        count: 0,
+        max: 100
+      })
+
+      const { count, max } = toRefs(stateCount)
+      console.log(count.value)
+
+      return {
+        stateCount,
+        count,
+        max
+      }
+    },
+    template:
+    `<div>
+      <div>toRefs</div>
+      <div>响应式对象的数据：{{ stateCount.count }}</div>
+      <div>toRefs()解构后数据：{{ count }}</div>
+      <button @click='count++'>点我count+1</button>
+    </div>`
+  }
+
+  createApp({
+    components: {
+      'component-a': componentA,
+      'component-b': componentB
+    },
+  }).mount('#app')
+</script>
+</body>
+</html>

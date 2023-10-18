@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>5-4 shallow</title>
+</head>
+<body>
+<div id="app">
+  <component-a></component-a>
+  <component-b></component-b>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const { createApp, ref, reactive, toRef, toRefs } = Vue
+
+  const componentA = {
+    setup(props, ctx) {
+      const state = Vue.shallowReactive({
+        foo: 1,
+        nested: {
+          bar: 2
+        }
+      })
+      return {
+        state
+      }
+    },
+    template: `
+      <div>
+        <div>foo: {{ state.foo }}</div>
+        <div>nested.bar: {{ state.nested.bar }}</div>
+        <button @click='state.nested.bar++'>点我bar+1，不触发更新</button>
+        <button @click='state.foo++'>点我foo+1，触发更新</button>
+      </div>`
+  }
+
+  const componentB = {
+    setup(props, ctx) {
+      const state = Vue.shallowRef({
+        foo: 1,
+        nested: {
+          bar: 2
+        }
+      })
+      setTimeout(()=> {
+        state.value.foo++   // 不会刷新
+        state.value.nested.bar++  // 不会刷新
+        Vue.triggerRef(state)  // 强制刷新
+      }, 2000)
+
+      const stateIncrement = () =>{
+        state.value.foo++
+        state.value.nested.bar++
+        Vue.triggerRef(state)
+      }
+
+      const resetState = () =>{
+        state.value = {
+          foo: 1,
+          nested: {
+            bar: 2
+          }
+        }
+      }
+      return {
+        state,
+        stateIncrement,
+        resetState
+      }
+    },
+
+    template: `
+      <div>
+      <div>foo: {{ state.foo }}</div>
+      <div>nested.bar: {{ state.nested.bar }}</div>
+      <button @click='stateIncrement'>点我+1</button>
+      <button @click='resetState'>重置state</button>
+      </div>`
+  }
+
+  createApp({
+    components: {
+      'component-a': componentA,
+      'component-b': componentB
+    },
+  }).mount('#app')
+</script>
+</body>
+</html>

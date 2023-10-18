@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>2-2 指令</title>
+</head>
+<body>
+<div id='app'>
+  <div>
+    <img alt='' v-bind:src='imageUrl' />
+    <img :src='imageUrl' alt='' />
+  </div>
+  <div v-if="name === 'A'">A</div>
+  <div v-else-if="name === 'B'">B</div>
+  <div v-else>C</div>
+  <div v-show="name === 'B'">仅B可见</div>
+  <ul>
+    <li :key='index' v-for='(item, index) in items'>
+      {{ index }} - {{ item.message }}
+    </li>
+  </ul>
+  <button @click='add'>add a item</button>
+  <ul>
+    <li :key='index' v-for='(value, name, index) in student'>
+      {{ index }} : {{ name }} : {{ value }}
+    </li>
+  </ul>
+  <button v-on:click="onBtnClick('hello', $event)">点我</button>
+  <a @click.prevent='goBiliBili' href='https://www.bilibili.com/' target='_blank'>去B站</a>
+  <div>Selected: {{ selected }}</div>
+  <select v-model='selected'>
+    <option :key='option.value'
+            :value='option.value'
+            v-for='option in options'
+            v-memo="selected === 'BENZ'"
+    >{{ option.text }}
+    </option>
+  </select>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const app = createApp({
+    data() {
+      return {
+        imageUrl: 'https://www.bilibili.com/favicon.ico',
+        name: 'B',
+        items: [
+          { message: 'tom' },
+          { message: 'jack' }
+        ],
+        student: {
+          name: 'kala',
+          gender: 'female',
+          age: 20
+        },
+        selected: 'BMW',
+        options: [
+          { text: '宝马', value: 'BMW' },
+          { text: '奔驰', value: 'BENZ' },
+          { text: '奥迪', value: 'AUDI' }
+        ]
+      }
+    },
+    methods: {
+      add() {
+        this.items.push({ message: 'bob' })
+      },
+      onBtnClick(param, event) {
+        console.log(param, event)
+      },
+      goBiliBili() {
+        alert('对不起，不去！')
+      }
+    }
+  })
+
+  app.mount('#app')
+</script>
+</body>
+</html>

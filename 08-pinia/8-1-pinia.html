@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+  <title>8-1-pinia</title>
+</head>
+<body>
+<div id='app'>
+  <div>{{counter.count}}</div>
+  <button @click='increment'>+</button>
+  <button @click='decrease'>-</button>
+</div>
+<script src='../lib/vue.global.js'></script>
+<script src='../lib/vue-demi.js'></script>
+<script src='../lib/pinia.js'></script>
+<script>
+  console.log(Vue.version)
+  // 版本匹配，pinia2.1+需要vue3.3+
+  const {createPinia, defineStore} = Pinia
+  const {createApp} = Vue
+  const useCounterStore = defineStore('counter', {
+    state: () => ({count: 0}),
+    actions: {
+      increment() {
+        this.count++
+      }
+    }
+  })
+
+  const app = createApp({
+    setup() {
+      const counter = useCounterStore()
+      const increment = () => {
+        counter.increment()
+      }
+
+      const decrease = () => {
+        counter.$patch({count: counter.count - 1})
+      }
+
+      return {
+        counter,
+        increment,
+        decrease
+      }
+    }
+  })
+
+  app.use(createPinia())
+  app.mount('#app')
+</script>
+</body>
+</html>

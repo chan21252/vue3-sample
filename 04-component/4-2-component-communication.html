@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>4-2 父子组件通信</title>
+</head>
+<body>
+<div id="app">
+    <component-a/>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const componentC = {
+    props: {
+      info: {
+        type: String,
+        default: ''
+      }
+    },
+    data() {
+      return {
+        str: 'C'
+      }
+    },
+    template: `<span>I am {{ str }}, {{ info }}</span>`,
+    mounted() {
+      this.$emit('my-function-b', 'data from C')
+    }
+  }
+
+  const componentD = {
+    data() {
+      return {
+        str: 'D'
+      }
+    },
+    methods: {
+      funcD() {
+        console.log('do funcD')
+      }
+    },
+    template: `<span>I am {{ str }}</span>`,
+    mounted() {
+      this.$parent.myFunctionB('data from D')
+    }
+  }
+
+  const componentB = {
+    data() {
+      return {
+        str: 'B',
+        info: 'data from B'
+      }
+    },
+    components: {
+      'component-c': componentC,
+      'component-d': componentD
+    },
+    methods: {
+      myFunctionB(data) {
+        console.log('do myFunctionB, data: ', data)
+      }
+    },
+    template: `
+      <div>I am {{ str }}</div>
+      <component-c :info='info' @my-function-b="myFunctionB"></component-c>,
+      <component-d ref="componentD"></component-d>`,
+    mounted() {
+      this.$refs.componentD.funcD();
+    }
+  }
+
+  const componentA = {
+    data() {
+      return {
+        str: 'A'
+      }
+    },
+    components: {
+      'component-b': componentB,
+    },
+    template: `
+      <div>I am {{ str }}</div>
+      <component-b></component-b>`
+  }
+
+  const { createApp } = Vue
+  const vm = createApp({
+    data() {
+      return {
+
+      }
+    },
+    components: {
+      'component-a': componentA
+    }
+  }).mount('#app')
+
+</script>
+</body>
+</html>

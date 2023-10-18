@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>6-3 transition-component</title>
+  <style>
+      .hello {
+          text-align: center;
+      }
+
+      .fade-enter-from, .fade-leave-to {
+          opacity: 0;
+      }
+
+      .fade-enter-active, .fade-leave-active {
+          transition: opacity 1s;
+      }
+
+      .bounce-enter-active {
+          animation: bounce-in 1s;
+      }
+
+      .bounce-leave-active {
+          animation: bounce-in 1s reverse;
+      }
+
+      @keyframes bounce-in {
+          0% {
+              transform: scale(0.0);
+          }
+          50% {
+              transform: scale(1.5);
+          }
+          100% {
+              transform: scale(1.0);
+          }
+      }
+  </style>
+</head>
+<body>
+<div id="app">
+  <button @click='show = !show'>toggle</button>
+  <transition name='fade' mode='out-in'>
+    <p style='text-align: center' v-if='show' key='a'>Hello </p>
+    <p style='text-align: center' v-else key='b'>World</p>
+  </transition>
+  <transition name='fade' mode='out-in'>
+    <component :is='view'></component>
+  </transition>
+  <button @click='changeView'>change view</button>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const { createApp, ref } = Vue
+
+  const componentA = {
+    template: `<div>component A</div>`
+  }
+
+  const componentB = {
+    template: `<div>component B</div>`
+  }
+
+  const vm = createApp({
+    components: {
+      componentA, componentB
+    },
+    setup() {
+      const show = ref(true)
+      const view = ref('componentA')
+
+      const changeView = () => {
+        view.value = view.value === 'componentA' ? 'componentB' : 'componentA'
+      }
+      return {
+        show,
+        view,
+        changeView
+      }
+    },
+  }).mount('#app')
+</script>
+</body>
+</html>

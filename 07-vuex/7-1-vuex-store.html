@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>7-1 store</title>
+  <style>
+
+  </style>
+</head>
+<body>
+<div id='app'>
+  <input type='number' v-model='num'>
+  <div>{{ count }}</div>
+  <div>{{ total }}</div>
+  <div>{{ totalMoney }}</div>
+  <button @click='increment'>mutation+</button>
+  <button @click='increment2'>action+</button>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script src='../lib/vuex.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const { createStore } = Vuex
+  const store = createStore({
+    strict: true,
+    state() {
+      return {
+        count: 0
+      }
+    },
+    mutations: {
+      increment(state, params) {
+        state.count += params.num
+      }
+    },
+    actions: {
+      incrementAction(ctx, params) {
+        ctx.commit('increment', params)
+      }
+    },
+    getters: {
+      getFormatCount(state) {
+        return '数量有 ' + state.count + ' 个'
+      },
+      getFormatCount2(state) {
+        return (price) => {
+          return `单价是 ¥${price}, 总金额是 ¥${price * state.count}`
+        }
+      }
+    }
+
+  })
+  const app = createApp({
+    data() {
+      return {
+        num: 0
+      }
+    },
+    computed: {
+      count() {
+        return this.$store.state.count
+      },
+      total() {
+        return this.$store.getters.getFormatCount
+      },
+      totalMoney() {
+        return this.$store.getters.getFormatCount2(20)
+      }
+    },
+    methods: {
+      increment() {
+        // this.$store.commit('increment', {num: this.num})
+        this.$store.commit({
+          type: 'increment',
+          num: this.num
+        })
+        // this.$store.state.count++
+        console.log(this.$store.state.count)
+      },
+      increment2() {
+        this.$store.dispatch('incrementAction', { num: this.num })
+      }
+    }
+  })
+
+  app.use(store)
+  app.mount('#app')
+</script>
+</body>
+</html>

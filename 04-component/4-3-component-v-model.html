@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>4-3 父子组件通信双向绑定</title>
+</head>
+<body>
+<div id="app">
+    <component-a/>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const componentB = {
+    props: ['info'],
+    data() {
+      return {
+
+      }
+    },
+    methods: {
+      clickCallback() {
+        this.$emit('update:info', 'Tom')
+      }
+    },
+    template: `
+    <button @click="clickCallback">点击换人</button>
+    <input type="text" v-model="info">`
+  }
+  const componentA = {
+    data() {
+      return {
+        info: 'Jack'
+      }
+    },
+    components: {
+      'component-b': componentB
+    },
+    template: `
+      <div>{{ info }}</div>
+      <component-b v-model:info="info"></component-b>
+    `
+  }
+  const { createApp } = Vue
+  const vm = createApp({
+    data() {
+      return {
+
+      }
+    },
+    components: {
+      'component-a': componentA
+    }
+  }).mount('#app')
+
+</script>
+</body>
+</html>

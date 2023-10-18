@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>3-4 计算属性</title>
+</head>
+<body>
+<div id='app'>
+  <div>{{ name }}</div>
+  <div>{{ age }}</div>
+  <div>{{ address.country }}</div>
+  <ul>
+    <li :key='index' v-for='(hobby, index) in hobbies'>
+      {{ hobby}}
+    </li>
+  </ul>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const vm = createApp({
+    data() {
+      return {
+        name: 'kala',
+        age: 36,
+        gender: 'female',
+        height: 168,
+        address: {
+          country: 'US'
+        },
+        hobbies: ['shopping', 'dance']
+      }
+    },
+
+    watch: {
+      name(newV, oldV) {
+        console.log('新的值：' + newV + '，旧的值：' + oldV)
+      },
+      age: {
+        handler: (newV, oldV) => {
+          console.log('新的值：' + newV + '，旧的值：' + oldV)
+        },
+        immediate: true
+      },
+      address: {
+        handler: (newV, oldV) => {
+          console.log('address, 新的值：' + newV + '，旧的值：' + oldV)
+        },
+        deep: true
+      },
+      'address.country': {
+        handler: (newV, oldV) => {
+          console.log('address.country, 新的值：' + newV + '，旧的值：' + oldV)
+        }
+      },
+      hobbies: {
+        handler: (newV, oldV) => {
+          console.log('hobbies, 新的值：' + newV + '，旧的值：' + oldV)
+        },
+        deep: true
+      }
+    }
+  }).mount('#app')
+
+  // vm.name = 'Pom'
+  // vm.address.country = 'CN'
+  vm.hobbies = ['game']
+  vm.hobbies.push('swimming')
+</script>
+</body>
+</html>

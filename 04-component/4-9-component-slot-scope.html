@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>4-9 组件作用域插槽</title>
+</head>
+<body>
+<div id="app">
+    <person>
+        <template v-slot:default="{ person }"><p>{{ person.name }}</p></template>
+        <template v-slot:one="{ person }"><p>{{ person.age }}</p></template>
+        <template v-slot:two="slotProps"><p>{{ slotProps.person.gender }}</p></template>
+        <template v-slot:three="{ person }"><p>{{ person.name }}</p></template>
+    </person>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+    const { createApp } = Vue
+
+    const person = {
+      data() {
+        return {
+          person: {
+            name: 'jack',
+            age: 20,
+            gender: 'male'
+          }
+        }
+      },
+      template: `<div>
+        <slot v-bind:person="person"></slot>
+        <slot name="one" v-bind:person="person"></slot>
+        <slot name="two" v-bind:person="person"></slot>
+        <slot name="three" :person="person"></slot>
+      </div>`
+    }
+    const vm = createApp({
+      data() {
+        return {
+        }
+      },
+      components: {
+        'person': person,
+      }
+    }).mount('#app')
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>3-3 计算属性</title>
+</head>
+<body>
+<div id='app'>
+  <div>{{ name }}: {{ height }}</div>
+  <div>{{ personInfo }}</div>
+  <div>{{ personInfo2 }}</div>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const vm = createApp({
+    data() {
+      return {
+        name: 'kala',
+        age: 36,
+        gender: 'female',
+        height: 168,
+        country: 'China'
+      }
+    },
+    computed: {
+      personInfo() {
+        console.log('computed')
+        let isFit = false
+        if (this.age > 18 && this.country === 'China') {
+          isFit = true
+        }
+        return this.name + ': ' + (isFit ? '符合要求' : '不符合要求')
+      },
+      personInfo2: {
+        get() {
+          console.log('personInfo2.get')
+          return `name: ${this.name}, height: ${this.height}`
+        },
+        set(param) {
+          console.log('personInfo2.set', param)
+          this.name = param
+          this.height = 180
+        }
+      }
+    }
+  }).mount('#app')
+  vm.personInfo2 = 'Jack'
+  // vm.name = 'Pom'
+  // vm.name = 'Pom'
+  // vm.height = 170
+</script>
+</body>
+</html>

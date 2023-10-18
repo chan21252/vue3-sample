@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>4-7 父子组件通信-provide/inject</title>
+</head>
+<body>
+<div id="app">
+    <todo-list></todo-list>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+    const { createApp } = Vue
+    const app = createApp({})
+
+    app.component('todo-list', {
+      data() {
+        return {
+          todos: ['买票', '填表'],
+        }
+      },
+      methods: {
+        clickCallback() {
+          this.todos.push('付款')
+        }
+      },
+      template: `<div>{{ todos.length }}</div>
+      <button @click="clickCallback">添加</button>
+      <todo-list-statistics></todo-list-statistics>`,
+      provide() {
+        return {
+          user: 'cc',
+          // todoLength: this.todos.length,
+          todoLength: Vue.computed(() => this.todos.length)
+        }
+      }
+    })
+
+    app.component('todo-list-statistics', {
+      inject: ['user', 'todoLength'],
+      data() {
+        return {
+
+        }
+      },
+      template: `<div>{{ user }}</div>
+      <div>{{ todoLength }}</div>`,
+      created() {
+        console.log(this.user)
+      }
+    })
+
+    app.mount('#app')
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>7-2 modules</title>
+  <style>
+
+  </style>
+</head>
+<body>
+<div id='app'>
+  <counter></counter>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script src='../lib/vuex.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const { createStore } = Vuex
+
+  const moduleA = {
+    namespaced: true,
+    state() {
+      return {
+        count: 0
+      }
+    },
+    mutations: {
+      increment(state) {
+        state.count++
+      }
+    },
+    getters: {
+      doubleCount(state, getters, rootState, rootGetters) {
+        console.log(getters)
+        console.log(rootState)
+        console.log(rootGetters)
+        return state.count * 2
+      }
+    },
+    actions: {
+      incrementAction(ctx) {
+        ctx.commit('increment')
+        ctx.dispatch('b/incrementAction', null, { root: true })
+      }
+    }
+  }
+
+  const moduleB = {
+    namespaced: true,
+    state() {
+      return {
+        count: 0
+      }
+    },
+    mutations: {
+      increment(state) {
+        state.count++
+      }
+    },
+    getters: {
+      doubleCount(state) {
+        return state.count * 2
+      }
+    },
+    actions: {
+      incrementAction(ctx) {
+        ctx.commit('increment')
+      }
+    }
+  }
+
+  const store = createStore({
+    state: {
+      rootCount: 3
+    },
+    getters: {
+      rootDoubleCount(state) {
+        return state.rootCount * 2
+      }
+    },
+    modules: {
+      'a': moduleA,
+      'b': moduleB
+    }
+  })
+
+  const counter = {
+    data() {
+      return {}
+    },
+    computed: {
+      count() {
+        return this.$store.getters['a/doubleCount']
+      },
+      countB() {
+        return this.$store.state.b.count
+      }
+    },
+    methods: {
+      clb() {
+        // this.$store.commit('a/increment')
+        this.$store.dispatch('a/incrementAction')
+        console.log(this.$store.state.a.count)
+      }
+    },
+    template: `
+      <div>{{ count }}</div>
+      <div>{{ countB }}</div>
+      <button @click='clb'>+1</button>`
+  }
+  const app = createApp({
+    components: {
+      counter
+    }
+  })
+  app.use(store)
+  app.mount('#app')
+</script>
+</body>
+</html>

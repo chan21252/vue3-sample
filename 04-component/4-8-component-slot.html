@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>4-8 组件插槽</title>
+</head>
+<body>
+<div id="app">
+    <children>
+        <template #default><p>default slot</p></template>
+<!--        <p>default slot</p>-->
+        <template v-slot:one><p>one slot</p></template>
+        <template #two><p>two slot</p></template>
+        <template #[dynamicSlotName]><p>dynamic slot name</p></template>
+    </children>
+    <component-text></component-text>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+    const { createApp } = Vue
+    const children = {
+      data() {
+        return {
+
+        }
+      },
+      template: `<div id="children">
+        <slot></slot>
+        <slot name="one"></slot>
+        <slot name="two"></slot>
+        <slot name="three"></slot>
+        <slot>default content</slot>
+      </div>`
+    }
+
+    const text = {
+      template: `<div><slot>备用插槽内容</slot></div>`
+    }
+    const vm = createApp({
+      data() {
+        return {
+          dynamicslotname: 'three'
+        }
+      },
+      components: {
+        'children': children,
+        'component-text': text
+      }
+    }).mount('#app')
+</script>
+</body>
+</html>

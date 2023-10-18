@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>7-3 plugins</title>
+  <style>
+
+  </style>
+</head>
+<body>
+<div id='app'>
+  <counter></counter>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script src='../lib/vuex.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const { createStore } = Vuex
+
+  const myPlugin = (store) => {
+    store.subscribe((mutation, state) => {
+      console.log('mutation', mutation)
+      console.log('state', state)
+    })
+  }
+  const store = createStore({
+    plugins: [myPlugin],
+    state: {
+      count: 0
+    },
+    mutations: {
+      increment(state, payload) {
+        state.count += payload.num
+      }
+    }
+  })
+
+  const counter = {
+    computed: {
+      count() {
+        return this.$store.state.count
+      }
+    },
+    methods: {
+      onClick() {
+        this.$store.commit('increment', { num: 1 })
+      }
+    },
+    template: `
+      <div>{{ count }}</div>
+      <button @click='onClick'>+1</button>
+    `
+  }
+  const app = createApp({
+    components: {
+      counter
+    }
+  })
+  app.use(store)
+  app.mount('#app')
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>2-1 插值表达式</title>
+</head>
+<body>
+<div id='app'>
+  <div>{{ message }}</div>
+  <div v-once>这个不会更新：{{ message }}</div>
+  <div>{{ rawHtml }}</div>
+  <div v-html='rawHtml'></div>
+  <h2 v-bind:style='styleStr'>属性插值</h2>
+  <div>js表达式：{{ abc.split('').reverse().join('') }}</div>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const app = createApp({
+    data() {
+      return {
+        abc: 'abc',
+        message: '文本插值',
+        rawHtml: '<b>html文本 {{ abc }}</b>',
+        styleStr: 'color: #2c7db7'
+
+      }
+    }
+  })
+
+  app.mount('#app')
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>4-4 非父子组件通信</title>
+</head>
+<body>
+<div id="app">
+    <component-b></component-b>
+</div>
+<script src="../lib/vue.global.js" type="text/javascript"></script>
+<script>
+  const componentC = {
+    props: [
+        'infoFromD'
+    ],
+    data() {
+      return {
+        str: 'C'
+      }
+    },
+    template: `
+      <div>I am {{ str }}</div>
+      <div>this is info from D: {{ infoFromD }}</div>`,
+    mounted() {
+
+    }
+  }
+
+  const componentD = {
+    data() {
+      return {
+        str: 'D'
+      }
+    },
+    methods: {
+      clickCallback() {
+        this.$emit('sayToC', 'DDDD');
+      }
+    },
+    template: `
+      <div>I am {{ str }}</div>
+      <button @click="clickCallback">点我通知C</button>`,
+  }
+
+  const componentB = {
+    data() {
+      return {
+        infoFromD: ''
+      }
+    },
+    methods: {
+      sayToC(info) {
+        this.infoFromD = info
+      }
+    },
+    components: {
+      'component-c': componentC,
+      'component-d': componentD
+    },
+    template: `
+      <component-c :infoFromD="infoFromD"></component-c>
+      <component-d @sayToC="sayToC"></component-d>`,
+  }
+
+
+  const { createApp } = Vue
+  const vm = createApp({
+    data() {
+      return {
+
+      }
+    },
+    components: {
+      'component-b': componentB
+    }
+  }).mount('#app')
+
+</script>
+</body>
+</html>

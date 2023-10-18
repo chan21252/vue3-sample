@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+  <title>3-2 方法</title>
+</head>
+<body>
+<div id='app'>
+  <div>{{ name }}: {{ height }}</div>
+  <div>{{ personInfo() }}</div>
+</div>
+<script src='../lib/vue.global.js' type='text/javascript'></script>
+<script>
+  const { createApp } = Vue
+  const vm = createApp({
+    data() {
+      return {
+        name: 'kala',
+        age: 36,
+        gender: 'female',
+        height: 168,
+        country: 'China'
+      }
+    },
+    methods: {
+      personInfo() {
+        console.log('methods')
+        let isFit = false
+        if (this.age > 18 && this.country === 'China') {
+          isFit = true
+        }
+        return this.name + ': ' + (isFit ? '符合要求' : '不符合要求')
+      }
+    }
+  }).mount('#app')
+
+  vm.name = 'Pom'
+  vm.name = 'Pom'
+  vm.height = 170
+</script>
+</body>
+</html>

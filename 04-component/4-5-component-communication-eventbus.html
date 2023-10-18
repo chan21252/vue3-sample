@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>4-5 非父子组件通信-eventbus</title>
+</head>
+<body>
+<div id="app">
+    <component-b></component-b>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js" type="text/javascript"></script>
+<script>
+  const componentC = {
+    data() {
+      return {
+        str: 'C',
+        infoFromD: ''
+      }
+    },
+    template: `
+      <div>
+          <span>I am {{ str }}, </span>
+          <span>this is info from D: {{ infoFromD }}</span>
+      </div>`,
+    mounted() {
+        this.$EventBus.$on('eventBusEvent', function (data) {
+            console.log('eventBusEvent: ' + data)
+            this.infoFromD = data;
+        }.bind(this))
+    }
+  }
+
+  const componentD = {
+    data() {
+      return {
+        str: 'D'
+      }
+    },
+    methods: {
+      clickCallback() {
+        this.$EventBus.$emit('eventBusEvent', 'DDD')
+      }
+    },
+    template: `
+      <div>
+          <span>I am {{ str }}</span>
+          <button @click="clickCallback">点我通知C</button>
+      </div>`,
+  }
+
+  const componentB = {
+    data() {
+      return {
+      }
+    },
+    methods: {
+    },
+    components: {
+      'component-c': componentC,
+      'component-d': componentD
+    },
+    template: `<div>
+    <component-c/>
+    <component-d/>
+    </div>`,
+  }
+
+  const EventBus = new Vue()    // 事件总线
+  Vue.prototype.$EventBus = EventBus
+  console.log(Vue.prototype.$EventBus)
+  const app = new Vue({
+    el: '#app',
+    data() {
+      return {
+
+      }
+    },
+    components: {
+      'component-b': componentB
+    }
+  })
+
+</script>
+</body>
+</html>
